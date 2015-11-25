@@ -58,6 +58,7 @@ function drawLocation(map, location, opts) {
     opts.position = new google.maps.LatLng(location[0], location[1]);
     opts.map = map;
     var marker = new google.maps.Marker(opts);
+
     markers.push(marker);
     return marker;
 }

@@ -1,6 +1,7 @@
 
 $(document).ready(function() {
     markers = [];
+    locations = [];
     var map = initialize_gmaps();
 
     var getPlaceObject = function (typeOfPlace, nameOfPlace) {
@@ -44,14 +45,14 @@ $(document).ready(function() {
         var sectionName = listGroup.attr("id").split("-")[0];
         var placeObj = getPlaceObject(sectionName, name);
 
-        var newMarker = drawLocation(map, placeObj.place[0].location);
+
+        drawLocation(map, placeObj.place[0].location);
+        locations.push(placeObj.place[0].location);
         if (isHotel && $('#hotels-group').children().length > 0 ){
             $('#hotels-group').children().replaceWith(item.snippet);
-            //$('#hotels-group > div').data("marker", newMarker) this isnt working either
         } else {
             if (existingItems.length ===0) {
                 listGroup.append(item.snippet).data("marker", newMarker);
-
             }
         }
 
@@ -78,13 +79,12 @@ $(document).ready(function() {
 
 
     $('.list-group').on("click", "button", function() {
-        // var name = $(this).siblings("span").text();
-        // var sectionName = $(this).parent().parent().attr("id").split("-")[0];
-        // var locations = getPlaceObject(sectionName, name).place[0].location;
-
-        // these two lines dont work
-        // console.log($(this).parent("div"));
-        // $(this).parent("div").data("marker").setMap(null);
+        var name = $(this).siblings("span").text();
+        var sectionName = $(this).parent().parent().attr("id").split("-")[0];
+        var location = getPlaceObject(sectionName, name).place[0].location;
+        
+        markers[locations.indexOf(location)].setMap(null);
+        locations[locations.indexOf(location)] = 0;
         $(this).parent().remove();
     })
 
