@@ -56,13 +56,13 @@
             <button class="btn btn-circle day-btn">1</button>
             <button class="btn btn-circle day-btn current-day">2</button>
             <button class="btn btn-circle day-btn">3</button>
-            <button class="btn btn-circle day-btn add-btn">+</button>
+            <button class="btn btn-circle day-btn add-day-btn">+</button>
           </div>
         </div>
         <div class="panel-body">
           <div>
             <h4>My Hotel</h4>
-            <ul class="list-group hotel-group">
+            <ul class="list-group" id = "hotels-group">
 <!--               <div class="itinerary-item">
                 <span class="title">Andaz Wall Street</span>
                 <button class="btn btn-xs btn-danger remove btn-circle">x</button>
@@ -71,7 +71,7 @@
           </div>
           <div>
             <h4>My Restaurants</h4>
-            <ul class="list-group restaurant-group">
+            <ul class="list-group" id = "restaurants-group">
 <!--               <div class="itinerary-item">
                 <span class="title">Bouley</span>
                 <button class="btn btn-xs btn-danger remove btn-circle">x</button>
@@ -84,7 +84,7 @@
           </div>
           <div>
             <h4>My Activities</h4>
-            <ul class="list-group activity-group">
+            <ul class="list-group" id = "activities-group">
 <!--               <div class="itinerary-item">
                 <span class="title">Mahayana Buddhist Temple Association</span>
                 <button class="btn btn-xs btn-danger remove btn-circle">x</button>
@@ -100,4 +100,11 @@
     </div>
   </div>
 </div>
+<script>
+  {% autoescape false %}
+  var all_hotels = {{ all_hotels | json }};
+  var all_restaurants = {{ all_restaurants | json }};
+  var all_activities = {{ all_activities | json }};
+  {% endautoescape %}
+</script>
 {% endblock %}

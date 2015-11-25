@@ -1,62 +1,108 @@
 
 $(document).ready(function() {
+    markers = [];
+    var map = initialize_gmaps();
+
+    var getPlaceObject = function (typeOfPlace, nameOfPlace) {
+        console.log(typeOfPlace, nameOfPlace);
+
+        var placeCollection = window['all_' + typeOfPlace];
+
+        return placeCollection.filter(function (place) {
+            return place.name === nameOfPlace;
+        })[0];
+
+    };
+
+
 
 //ADD
 
 //add hotels to itinerary with "+" button (one allowed)
 
-function itineraryItem (name){
-    this.title = name;
-    this.snippet = '<div class="itinerary-item"><span class="title">'+ this.title + '</span><button class="btn btn-xs btn-danger remove btn-circle">x</button></div>';
-}
+    function itineraryItem (name){
+        this.title = name;
+        this.snippet = '<div class="itinerary-item"><span class="title">'+ this.title + '</span><button class="btn btn-xs btn-danger remove remove-itin btn-circle">x</button></div>';
+    };
 
-$("button.add-btn").on("click", function(){
-    var listGroup
-    var isHotel = false;
-    if (  $(this).prev('select').hasClass('hotelSelector') ) {
-        listGroup = $('.hotel-group');
-        isHotel = true;
-    } else if ( $(this).prev('select').hasClass('restaurantSelector')){
-        listGroup = $('.restaurant-group');
-    } else {
-         listGroup = $('.activity-group');
-    }
+    $("button.add-btn").on("click", function(){
+        var listGroup
+        var isHotel = false;
+        if (  $(this).prev('select').hasClass('hotelSelector') ) {
+            listGroup = $('#hotels-group');
+            isHotel = true;
+        } else if ( $(this).prev('select').hasClass('restaurantSelector')){
+            listGroup = $('#restaurants-group');
+        } else {
+             listGroup = $('#activities-group');
+        }
 
-    var name = $(this).prev().children('option:selected').text()
-    var item = new itineraryItem(name)
-    var existingItems = listGroup.children('.itinerary-item:contains(' + name + ')')
-    console.log("existingItems", existingItems);
+        var name = $(this).prev().children('option:selected').text()
+        var item = new itineraryItem(name)
+        var existingItems = listGroup.children('.itinerary-item:contains(' + name + ')')
+        console.log("existingItems", existingItems);
+        var sectionName = listGroup.attr("id").split("-")[0];
+        var placeObj = getPlaceObject(sectionName, name);
 
-    if (isHotel && $('.hotel-group').children().length > 0 ){
-            $('.hotel-group').children().replaceWith(item.snippet);
-    }  else {
-            if (existingItems.length ===0) {listGroup.append(item.snippet)
+        var newMarker = drawLocation(map, placeObj.place[0].location);
+        if (isHotel && $('#hotels-group').children().length > 0 ){
+            $('#hotels-group').children().replaceWith(item.snippet);
+            //$('#hotels-group > div').data("marker", newMarker) this isnt working either
+        } else {
+            if (existingItems.length ===0) {
+                listGroup.append(item.snippet).data("marker", newMarker);
+
             }
-    }
-})
+        }
 
 
-
-//add restaurante to itinerary with "+" button (mult allowed)
-
-//add Things To Do to itinerary with "+" button (mult allowed)
-
+    });
 // add Days by clicking "+"
+
+    $(".add-day-btn").on("click", function() {
+        var dayCount = $(".day-buttons").children().length;
+        $('<button class="btn btn-circle day-btn">'+dayCount+'</button>').insertBefore(".add-day-btn");
+    });
+
+
+
+
+
+
 
 // adjust map on Add
 
 // drop marker on Add
 
-
 //REMOVE
-//remove hotels from itinerary with "X" button
-
-//remove restaurant from itinerary with "X" button
 
 
-//remove things to do from itinerary with "X" button
+    $('.list-group').on("click", "button", function() {
+        // var name = $(this).siblings("span").text();
+        // var sectionName = $(this).parent().parent().attr("id").split("-")[0];
+        // var locations = getPlaceObject(sectionName, name).place[0].location;
+
+        // these two lines dont work
+        // console.log($(this).parent("div"));
+        // $(this).parent("div").data("marker").setMap(null);
+        $(this).parent().remove();
+    })
+
+    $('.day-remove').on("click", function() {
+        var $this = $(this);       
+        var $day = $this.siblings().text().split(" ")[1];
+        console.log("hello", $day)
+        $(".day-btn").filter(function(index) {return $(this).text() === $day}).remove();
+        $(".day-btn").filter(function(index) {
+            return $(this).text() > $day})
+        .map(function(index) {
+            $(this).text((parseInt($(this).text()) - 1).toString())
+            return $(this)
+        })
+    })
 
 // remove days by clicking "X"
+
 
 // remove marker on Remove
 
